@@ -81,3 +81,35 @@ async def ocr_image(file: UploadFile = File(...)):
 @app.get("/")
 def health_check():
     return {"status": "running"}
+
+
+
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/ocr", response_class=HTMLResponse)
+def ocr_form():
+    return """
+    <html>
+        <body>
+            <h2>رفع صورة لاستخراج النص (OCR)</h2>
+            <form action="/ocr" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*">
+                <button type="submit">رفع الصورة</button>
+            </form>
+        </body>
+    </html>
+    """
+
+@app.post("/ocr")
+async def ocr_image(file: UploadFile = File(...)):
+    contents = await file.read()
+
+    image = vision.Image(content=contents)
+    response = vision_client.text_detection(image=image)
+    texts = response.text_annotations
+
+    if texts:
+        return {"extracted_text": texts[0].description}
+    else:
+        return {"extracted_text": "لم يتم العثور على نص"}
