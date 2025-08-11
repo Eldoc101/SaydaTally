@@ -9,6 +9,8 @@ import uuid
 # إعداد FastAPI
 # -----------------------------------
 app = FastAPI()
+from fastapi.staticfiles import StaticFiles
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 app.add_middleware(
     CORSMiddleware,
