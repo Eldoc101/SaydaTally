@@ -29,8 +29,17 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 # -----------------------------------
 # إعداد Google Vision API
 # -----------------------------------
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-vision_client = vision.ImageAnnotatorClient()
+import os, json
+from google.oauth2 import service_account
+from google.cloud import vision
+
+# قراءة بيانات Google Vision من الـ Environment Variable
+credentials_info = json.loads(os.environ["GOOGLE_CREDENTIALS_JSON"])
+credentials = service_account.Credentials.from_service_account_info(credentials_info)
+
+# إنشاء العميل
+vision_client = vision.ImageAnnotatorClient(credentials=credentials)
+
 
 # -----------------------------------
 # رفع صورة وتشغيل OCR
