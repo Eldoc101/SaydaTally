@@ -4,4 +4,5 @@ supabase
 google-cloud-vision
 requests
 pydantic
+python-multipart
 
